@@ -1,0 +1,5 @@
+bin/
+obj/
+appsettings.DevelopmentSettings.json
+appsettings.json          ← ADD THIS if it has real secrets!
+*.db                      ← If you have any database files
