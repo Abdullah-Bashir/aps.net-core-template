@@ -1,7 +1,10 @@
+// Models.cs
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace firstAPIs.Models;
+
 
 public class User
 {
@@ -20,10 +23,19 @@ public class User
     public string PasswordHash { get; set; } = string.Empty;
     public string Role { get; set; } = "User";
     
+    // Email verification fields
+    public bool IsEmailVerified { get; set; } = false;
+    public string? EmailVerificationToken { get; set; }
+    public DateTime? EmailVerificationTokenExpiry { get; set; }
+    
+    // Password reset fields (NEW)
+    public string? PasswordResetToken { get; set; }
+    public DateTime? PasswordResetTokenExpiry { get; set; }
+    
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
 
-// DTOs (Data Transfer Objects) - what goes in/out of API
+// DTOs
 public class RegisterRequest
 {
     [Required]
@@ -49,6 +61,44 @@ public class LoginRequest
     public string Password { get; set; } = string.Empty;
 }
 
+public class OtpRequest
+{
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
+}
+
+public class VerifyOtpRequest
+{
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
+    
+    [Required]
+    public string Otp { get; set; } = string.Empty;
+}
+
+public class ForgotPasswordRequest
+{
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
+}
+
+public class ResetPasswordRequest
+{
+    [Required]
+    public string Token { get; set; } = string.Empty;
+    
+    [Required]
+    [MinLength(6)]
+    public string NewPassword { get; set; } = string.Empty;
+    
+    [Required]
+    [Compare("NewPassword")]
+    public string ConfirmPassword { get; set; } = string.Empty;
+}
+
 public class AuthResponse
 {
     public string Token { get; set; } = string.Empty;
@@ -60,5 +110,6 @@ public class UserDto
     public int Id { get; set; }
     public string Email { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
+    public bool IsEmailVerified { get; set; }
     public DateTime CreatedAt { get; set; }
 }
